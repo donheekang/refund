@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>환급률 계산기</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #e9ecef;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .calculator {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 80%;
+        }
+
+        h2 {
+            text-align: center;
+            color: #007bff;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f8f9fa;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .input-row {
+            background-color: #fff;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .result {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #28a745;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <h2>환급률 계산기</h2>
+
+        <table>
+            <tr>
+                <th>기간</th>
+                <th>시작 환급률(%)</th>
+                <th>종료 환급률(%)</th>
+                <th>중간 지점 개월</th>
+                <th>계산</th>
+            </tr>
+            <tr class="input-row">
+                <td>3년(36개월) - 4년(48개월)</td>
+                <td><input type="number" id="startRate1"></td>
+                <td><input type="number" id="endRate1"></td>
+                <td><input type="number" id="targetMonth1"></td>
+                <td><button onclick="calculateRate(1, 36, 48)">계산하기</button></td>
+            </tr>
+            <tr class="input-row">
+                <td>4년(48개월) - 5년(60개월)</td>
+                <td><input type="number" id="startRate2"></td>
+                <td><input type="number" id="endRate2"></td>
+                <td><input type="number" id="targetMonth2"></td>
+                <td><button onclick="calculateRate(2, 48, 60)">계산하기</button></td>
+            </tr>
+            <tr class="input-row">
+                <td>5년(60개월) - 6년(72개월)</td>
+                <td><input type="number" id="startRate3"></td>
+                <td><input type="number" id="endRate3"></td>
+                <td><input type="number" id="targetMonth3"></td>
+                <td><button onclick="calculateRate(3, 60, 72)">계산하기</button></td>
+            </tr>
+            <tr class="input-row">
+                <td>6년(72개월) - 7년(84개월)</td>
+                <td><input type="number" id="startRate4"></td>
+                <td><input type="number" id="endRate4"></td>
+                <td><input type="number" id="targetMonth4"></td>
+                <td><button onclick="calculateRate(4, 72, 84)">계산하기</button></td>
+            </tr>
+        </table>
+
+        <div id="results"></div>
+    </div>
+
+    <script>
+        function calculateRate(row, startMonth, endMonth) {
+            var startRate = parseFloat(document.getElementById('startRate' + row).value);
+            var endRate = parseFloat(document.getElementById('endRate' + row).value);
+            var targetMonth = parseFloat(document.getElementById('targetMonth' + row).value);
+
+            var result = calculateInterpolatedRate(startRate, endRate, startMonth, endMonth, targetMonth);
+
+            // 결과 표시
+            var resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML += "<div class='result'>기간 " + row + " (" + targetMonth + "개월): " + result.toFixed(2) + "%</div>";
+        }
+
+        function calculateInterpolatedRate(startRate, endRate, startMonth, endMonth, targetMonth) {
+            return startRate + ((endRate - startRate) / (endMonth - startMonth)) * (targetMonth - startMonth);
+        }
+    </script>
+</body>
+</html>
