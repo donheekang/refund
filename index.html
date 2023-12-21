@@ -80,6 +80,7 @@
         <table>
             <tr>
                 <th>기간</th>
+                <th>월 보험료</th>
                 <th>시작 환급률(%)</th>
                 <th>종료 환급률(%)</th>
                 <th>중간 지점 개월</th>
@@ -87,6 +88,7 @@
             </tr>
             <tr class="input-row">
                 <td>3년(36개월) - 4년(48개월)</td>
+                <td><input type="text" id="premium1" onkeyup="formatCurrency(this)"></td>
                 <td><input type="number" id="startRate1"></td>
                 <td><input type="number" id="endRate1"></td>
                 <td><input type="number" id="targetMonth1"></td>
@@ -94,6 +96,7 @@
             </tr>
             <tr class="input-row">
                 <td>4년(48개월) - 5년(60개월)</td>
+                <td><input type="text" id="premium2" onkeyup="formatCurrency(this)"></td>
                 <td><input type="number" id="startRate2"></td>
                 <td><input type="number" id="endRate2"></td>
                 <td><input type="number" id="targetMonth2"></td>
@@ -101,6 +104,7 @@
             </tr>
             <tr class="input-row">
                 <td>5년(60개월) - 6년(72개월)</td>
+                <td><input type="text" id="premium3" onkeyup="formatCurrency(this)"></td>
                 <td><input type="number" id="startRate3"></td>
                 <td><input type="number" id="endRate3"></td>
                 <td><input type="number" id="targetMonth3"></td>
@@ -108,6 +112,7 @@
             </tr>
             <tr class="input-row">
                 <td>6년(72개월) - 7년(84개월)</td>
+                <td><input type="text" id="premium4" onkeyup="formatCurrency(this)"></td>
                 <td><input type="number" id="startRate4"></td>
                 <td><input type="number" id="endRate4"></td>
                 <td><input type="number" id="targetMonth4"></td>
@@ -120,19 +125,30 @@
 
     <script>
         function calculateRate(row, startMonth, endMonth) {
+            var premium = parseCurrency(document.getElementById('premium' + row).value);
             var startRate = parseFloat(document.getElementById('startRate' + row).value);
             var endRate = parseFloat(document.getElementById('endRate' + row).value);
             var targetMonth = parseFloat(document.getElementById('targetMonth' + row).value);
 
-            var result = calculateInterpolatedRate(startRate, endRate, startMonth, endMonth, targetMonth);
+            var interpolatedRate = calculateInterpolatedRate(startRate, endRate, startMonth, endMonth, targetMonth);
+            var totalRefund = premium * targetMonth * (interpolatedRate / 100);
 
             // 결과 표시
             var resultsDiv = document.getElementById('results');
-            resultsDiv.innerHTML += "<div class='result'>기간 " + row + " (" + targetMonth + "개월): " + result.toFixed(2) + "%</div>";
+            resultsDiv.innerHTML += "<div class='result'>기간 " + row + " (" + targetMonth + "개월): 환급률 " + interpolatedRate.toFixed(2) + "%, 총 환급금액: " + totalRefund.toLocaleString() + "</div>";
         }
 
         function calculateInterpolatedRate(startRate, endRate, startMonth, endMonth, targetMonth) {
             return startRate + ((endRate - startRate) / (endMonth - startMonth)) * (targetMonth - startMonth);
+        }
+
+        function formatCurrency(element) {
+            var value = element.value.replace(/,/g, '');
+            element.value = parseFloat(value).toLocaleString('en-US', { maximumFractionDigits: 0 });
+        }
+
+        function parseCurrency(value) {
+            return parseFloat(value.replace(/,/g, ''));
         }
     </script>
 </body>
